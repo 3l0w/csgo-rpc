@@ -67,6 +67,11 @@ function setRpcActivity(data) {
             time = new Date()
             menu = false
         }
+        if(data.map.mode == "gungameprogressive"){
+            var details = "Gungame" + ", " + data.player.match_stats.kills + "/" + data.player.match_stats.assists + "/" + data.player.match_stats.deaths
+        }else{
+            var details = data.map.mode[0].toUpperCase() + data.map.mode.slice(1) + ", " + data.player.match_stats.kills + "/" + data.player.match_stats.assists + "/" + data.player.match_stats.deaths
+        }
         if (data.player.team == "CT") { var team = "ct" } else { var team = "t" }
         if (data.round.phase === "live") {
             var phase = "Live"
@@ -75,14 +80,16 @@ function setRpcActivity(data) {
         } else {
             var phase = "Round Over"
         }
-        if(data.map.mode === "deathmatch"){
+        if (data.map.mode === "deathmatch") {
             var state = phase
-        }else{
-        var state = data.map.team_ct.score + " - " + data.map.team_t.score + ", " + phase
+        } else if (data.map.mode === "gungameprogressive") {
+            var state = phase
+        } else {
+            var state = data.map.team_ct.score + " - " + data.map.team_t.score + ", " + phase
         }
         if (data)
             var activity = {
-                details: data.map.mode[0].toUpperCase() + data.map.mode.slice(1) + ", " + data.player.match_stats.kills + "/" + data.player.match_stats.assists + "/" + data.player.match_stats.deaths,
+                details: details,
                 state: state,
                 largeImageKey: data.map.name,
                 largeImageText: data.map.name,
