@@ -56,7 +56,7 @@ function setRpcActivity(data) {         //Set Rp activity
         activity = {
             details: "In menu",
             largeImageKey: "icon",
-            largeImageText: "csgo",
+            largeImageText: "Counter-Strike Global Offensive",
             instance: false,
             startTimestamp: menutime
         }
@@ -68,8 +68,8 @@ function setRpcActivity(data) {         //Set Rp activity
     if (data.player.state) {        //If data.player.state isnt null, set activity with the stats below
         if (data.player.team == "CT") {
             var score = data.map.team_ct.score + " - " + data.map.team_t.score //set 1st team score for the player team
-        }else{
-            var score = data.map.team_t.score + " - " + data.map.team_ct.score 
+        } else {
+            var score = data.map.team_t.score + " - " + data.map.team_ct.score
         }
         if (time === undefined) {   //If the match doesnt have time code, it create one
             time = new Date()
