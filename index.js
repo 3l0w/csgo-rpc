@@ -78,31 +78,32 @@ function setRpcActivity(data) {         //Set Rp activity
             time = new Date()
             menu = false
         }
-
-
-        if (data.player.team == "CT") { var team = "ct" } else { var team = "t" } //Set player's team
-
-
-        if (data.round.phase === "live") {                  //Set the match state as live
+        if(data.map.mode == "gungameprogressive"){
+            var details = "Gungame" + ", " + data.player.match_stats.kills + "/" + data.player.match_stats.assists + "/" + data.player.match_stats.deaths
+        }else{
+            var details = data.map.mode[0].toUpperCase() + data.map.mode.slice(1) + ", " + data.player.match_stats.kills + "/" + data.player.match_stats.assists + "/" + data.player.match_stats.deaths
+        }
+        if (data.player.team == "CT") { var team = "ct" } else { var team = "t" }
+        if (data.round.phase === "live") {
             var phase = "Live"
         } else if (data.round.phase == "freezetime") {      //Set the match state as freezetime
             var phase = "Freeze Time"
         } else {                                            //Set the match state as round over
             var phase = "Round Over"
         }
-
-
-        if(data.map.mode === "deathmatch"){                 //If the game mode is deathmatch, set custom stats
-            var state = phase                               //because there is no score in deathmatch
-        }else{
-        var state = data.map.team_ct.score + " - " + data.map.team_t.score + ", " + phase //Set match score
+        if (data.map.mode === "deathmatch") {
+            var state = phase
+        } else if (data.map.mode === "gungameprogressive") {
+            var state = phase
+        } else {
+            var state = data.map.team_ct.score + " - " + data.map.team_t.score + ", " + phase
         }
 
 
 
         if (data)  //If data isnt null, set the missing fields for every gamemode (such as the map, the team, etc...)
             var activity = {
-                details: data.map.mode[0].toUpperCase() + data.map.mode.slice(1) + ", " + data.player.match_stats.kills + "/" + data.player.match_stats.assists + "/" + data.player.match_stats.deaths,
+                details: details,
                 state: state,
                 largeImageKey: data.map.name,
                 largeImageText: data.map.name,
