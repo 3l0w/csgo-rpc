@@ -78,7 +78,6 @@ function setRpcActivity(data) {         //Set Rp activity
             time = new Date()
             menu = false
         }
-<<<<<<< HEAD
         if(data.map.mode == "gungameprogressive"){
             var details = "Gungame" + ", " + data.player.match_stats.kills + "/" + data.player.match_stats.assists + "/" + data.player.match_stats.deaths
         }else{
@@ -86,35 +85,18 @@ function setRpcActivity(data) {         //Set Rp activity
         }
         if (data.player.team == "CT") { var team = "ct" } else { var team = "t" }
         if (data.round.phase === "live") {
-=======
-
-
-        if (data.player.team == "CT") { var team = "ct" } else { var team = "t" } //Set player's team
-
-
-        if (data.round.phase === "live") {                  //Set the match state as live
->>>>>>> bcfa233186e426191ea59a594516bf82ea7799cb
             var phase = "Live"
         } else if (data.round.phase == "freezetime") {      //Set the match state as freezetime
             var phase = "Freeze Time"
         } else {                                            //Set the match state as round over
             var phase = "Round Over"
         }
-<<<<<<< HEAD
         if (data.map.mode === "deathmatch") {
             var state = phase
         } else if (data.map.mode === "gungameprogressive") {
             var state = phase
         } else {
             var state = data.map.team_ct.score + " - " + data.map.team_t.score + ", " + phase
-=======
-
-
-        if(data.map.mode === "deathmatch"){                 //If the game mode is deathmatch, set custom stats
-            var state = phase                               //because there is no score in deathmatch
-        }else{
-        var state = data.map.team_ct.score + " - " + data.map.team_t.score + ", " + phase //Set match score
->>>>>>> bcfa233186e426191ea59a594516bf82ea7799cb
         }
 
 
