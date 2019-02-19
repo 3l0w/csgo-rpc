@@ -7,12 +7,16 @@ const DiscordRPC = require("discord-rpc")
 DiscordRPC.register(clientId);
 var rpc = new DiscordRPC.Client({ transport: 'ipc' });
 var time
-rpc.on('ready', () => {
+
+
+rpc.on('ready', () => {         //When rp is connected, send the username in the console
     console.log('Authed for user', rpc.user.username);
 });
-rpc.connect(clientId)
+rpc.connect(clientId)           //Connect the rp with the application
 
-server = http.createServer(function (req, res) {
+
+
+server = http.createServer(function (req, res) {        //Create the server who listen to csgo's stats
     if (req.method == 'POST') {
         res.writeHead(200, { 'Content-Type': 'text/html' });
         var body = '';
@@ -34,26 +38,30 @@ server = http.createServer(function (req, res) {
     }
 
 });
-var menu = false
+var menu = false;
 server.listen(port, host);
 console.log('Listening at http://' + host + ':' + port);
 
-function setRpcActivity(data) {
-    var activity = {
+
+function setRpcActivity(data) {         //Set Rp activity
+    var activity = {                    //This var is sent to discord, it will display you stats
         //  details: "",
-        //state: "",
+        //state: "Live", "Freezetime" or "End round"
+        //team: "ct" or "t"
         largeImageKey: "icon",
         largeImageText: "csgo",
         instance: false
 
     }
-    if (data.player.state === undefined) {
+
+
+    if (data.player.state === undefined) {      //If the player isnt in a game, set the stats as below
         time = undefined
-        activity.details = "Dans les menus"
+        activity.details = "In menu"
         if (menu === false) {
             menu = true
             var activity = {
-                details: "Dans les menus",
+                details: "In menu",
                 largeImageKey: "icon",
                 largeImageText: "csgo",
                 instance: false,
@@ -62,25 +70,37 @@ function setRpcActivity(data) {
             }
         }
     }
-    if (data.player.state) {
-        if (time === undefined) {
+
+
+    if (data.player.state) {        //If data.player.state isnt null, set activity with the stats below
+        
+        if (time === undefined) {   //If the match doesnt have time code, it create one
             time = new Date()
             menu = false
         }
-        if (data.player.team == "CT") { var team = "ct" } else { var team = "t" }
-        if (data.round.phase === "live") {
+
+
+        if (data.player.team == "CT") { var team = "ct" } else { var team = "t" } //Set player's team
+
+
+        if (data.round.phase === "live") {                  //Set the match state as live
             var phase = "Live"
-        } else if (data.round.phase == "freezetime") {
+        } else if (data.round.phase == "freezetime") {      //Set the match state as freezetime
             var phase = "Freeze Time"
-        } else {
+        } else {                                            //Set the match state as round over
             var phase = "Round Over"
         }
-        if(data.map.mode === "deathmatch"){
-            var state = phase
+
+
+        if(data.map.mode === "deathmatch"){                 //If the game mode is deathmatch, set custom stats
+            var state = phase                               //because there is no score in deathmatch
         }else{
-        var state = data.map.team_ct.score + " - " + data.map.team_t.score + ", " + phase
+        var state = data.map.team_ct.score + " - " + data.map.team_t.score + ", " + phase //Set match score
         }
-        if (data)
+
+
+
+        if (data)  //If data isnt null, set the missing fields for every gamemode (such as the map, the team, etc...)
             var activity = {
                 details: data.map.mode[0].toUpperCase() + data.map.mode.slice(1) + ", " + data.player.match_stats.kills + "/" + data.player.match_stats.assists + "/" + data.player.match_stats.deaths,
                 state: state,
@@ -92,6 +112,12 @@ function setRpcActivity(data) {
 
             }
     }
-    rpc.setActivity(activity)
+
+
+    rpc.setActivity(activity) //set activity
+
+
+
+
 }
 rpc.login({ clientId: clientId })
