@@ -20,14 +20,14 @@ server = http.createServer(function (req, res) {        //Create the server who 
         res.writeHead(200, { 'Content-Type': 'text/html' });
         var body = '';
         req.on('data', function (data) {
-            if (JSON.parse(data)) {
+            if (JSON.parse(data)) {             //If data can be parsed the parse and store in body
                 body = JSON.parse(data)
             }
 
         });
         req.on('end', function () {
             console.log(body);
-            if (body) {
+            if (body) {                     //If body are not undefined then set the activity
                 setRpcActivity(body)
             }
             res.end('');
@@ -49,7 +49,7 @@ function setRpcActivity(data) {         //Set Rp activity
     var activity = {} //This var is sent to discord, it will display you stats
 
     if (data.player.state === undefined) {    //If the player isnt in a game, set the stats as below
-        if (menu === false) {
+        if (menu === false) {     //If the menu doesnt have time code, it create one
             menu = true
             menutime = new Date()
         }
@@ -83,7 +83,7 @@ function setRpcActivity(data) {         //Set Rp activity
         } else {
             var team = "t"
         }
-        if (data.round === undefined) {
+        if (data.round === undefined) {                     //Set the match state as Warmup
             var phase = "Warmup"
         } else if (data.round.phase == "freezetime") {      //Set the match state as freezetime
             var phase = "Freeze Time"
@@ -92,25 +92,25 @@ function setRpcActivity(data) {         //Set Rp activity
         } else {                                            //Set the match state as round over
             var phase = "Round Over"
         }
-        if (data.map.mode === "deathmatch") {
+        if (data.map.mode === "deathmatch") {               //Set special state for deathmatch
             var state = phase
         } else if (data.map.mode === "gungameprogressive") {
-            var state = phase
+            var state = phase                               //Same for Gungame
         } else {
             var state = data.map.team_ct.score + " - " + data.map.team_t.score + ", " + phase
         }
         if (data.map.name === "de_shortnuke") {
-            map = "de_nuke"
+            map = "de_nuke"                        //set de_nuke image for nuke wingman version
         } else {
             map = data.map.name
         }
         
         if(maplist.indexOf(map) === -1){
-            map = "icon"
+            map = "icon"                    //If the program don't know a map then set map icon as csgo icon
         }else{
             maptext = map
         }
-        
+
         if (data)  //If data isnt null, set the missing fields for every gamemode (such as the map, the team, etc...)
             var activity = {
                 details: details,
@@ -126,8 +126,6 @@ function setRpcActivity(data) {         //Set Rp activity
 
 
     rpc.setActivity(activity) //set activity
-
-
 
 
 }
