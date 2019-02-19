@@ -66,7 +66,11 @@ function setRpcActivity(data) {         //Set Rp activity
 
 
     if (data.player.state) {        //If data.player.state isnt null, set activity with the stats below
-
+        if (data.player.team == "CT") {
+            var score = data.map.team_ct.score + " - " + data.map.team_t.score //set 1st team score for the player team
+        }else{
+            var score = data.map.team_t.score + " - " + data.map.team_ct.score 
+        }
         if (time === undefined) {   //If the match doesnt have time code, it create one
             time = new Date()
             menu = false
@@ -97,19 +101,19 @@ function setRpcActivity(data) {         //Set Rp activity
         } else if (data.map.mode === "gungameprogressive") {
             var state = phase                               //Same for Gungame
         } else {
-            var state = data.map.team_ct.score + " - " + data.map.team_t.score + ", " + phase
+            var state = score + ", " + phase
         }
         if (data.map.name === "de_shortnuke") {
             map = "de_nuke"                        //set de_nuke image for nuke wingman version
         } else {
             map = data.map.name
         }
-        
-        if(maplist.indexOf(map) === -1){
+        if (maplist.indexOf(map) === -1) {
             map = "icon"                    //If the program don't know a map then set map icon as csgo icon
-        }else{
+        } else {
             maptext = map
         }
+
 
         if (data)  //If data isnt null, set the missing fields for every gamemode (such as the map, the team, etc...)
             var activity = {
