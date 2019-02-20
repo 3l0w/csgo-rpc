@@ -20,8 +20,13 @@ server = http.createServer(function (req, res) {        //Create the server who 
         res.writeHead(200, { 'Content-Type': 'text/html' });
         var body = '';
         req.on('data', function (data) {
-            if (JSON.parse(data)) {             //If data can be parsed the parse and store in body
-                body = JSON.parse(data)
+            if (data) {
+                try {
+                     body = JSON.parse(data) //If data can be parsed the parse and store in body
+                } catch (error) {
+                     console.log(error)
+                }            
+               
             }
 
         });
