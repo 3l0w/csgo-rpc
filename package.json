@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "build_linux": "./build.sh",
-    "build_win": "./build.bat"
+    "build":"node build.js"
   },
   "author": "",
   "dependencies": {
