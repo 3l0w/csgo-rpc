@@ -5,6 +5,7 @@ const host = '127.0.0.1';
 const clientId = '547104228276174869';
 const DiscordRPC = require("discord-rpc")
 const maplist = require("./maplist.json")
+const exec = require('child_process').exec
 DiscordRPC.register(clientId);
 var rpc = new DiscordRPC.Client({ transport: 'ipc' });
 var time
@@ -12,6 +13,13 @@ var time
 
 rpc.on('ready', () => {         //When rp is connected, send the username in the console
     console.log('Authed for user', rpc.user.username);
+    rpc.setActivity({
+        details: "In menu",
+        largeImageKey: "icon",
+        largeImageText: "Counter-Strike Global Offensive",
+        instance: false,
+        startTimestamp: new Date()
+    })
 });
 rpc.connect(clientId)           //Connect the rp with the application
 
@@ -22,11 +30,11 @@ server = http.createServer(function (req, res) {        //Create the server who 
         req.on('data', function (data) {
             if (data) {
                 try {
-                     body = JSON.parse(data) //If data can be parsed the parse and store in body
+                    body = JSON.parse(data) //If data can be parsed the parse and store in body
                 } catch (error) {
-                     console.log(error)
-                }            
-               
+                    console.log(error)
+                }
+
             }
 
         });
@@ -46,9 +54,14 @@ server = http.createServer(function (req, res) {        //Create the server who 
     }
 
 });
+setInterval(() => {
+    isRunning('csgo.exe', (status) => {
+        if (!status) {
+            rpc.clearActivity()
+        }
+    })
+}, 1000);
 var menu = false;
-server.listen(port, host);
-console.log('Listening at http://' + host + ':' + port);
 var menutime
 function setRpcActivity(data) {         //Set Rp activity
     var activity = {} //This var is sent to discord, it will display you stats
@@ -81,9 +94,9 @@ function setRpcActivity(data) {         //Set Rp activity
             menu = false
         }
         if (data.map.mode == "gungameprogressive") {
-            var details = "Gungame" + ", " + data.player.match_stats.kills + "/" + data.player.match_stats.assists + "/" + data.player.match_stats.deaths
+            var details = "Gungame" + ", " + data.player.match_stats.kills + "/" + data.player.match_stats.assists + "/" + data.player.match_stats.deaths   //fixed name of gungame
         } else if (data.map.mode == "scrimcomp2v2") {
-            var details = "Wingman" + ", " + data.player.match_stats.kills + "/" + data.player.match_stats.assists + "/" + data.player.match_stats.deaths
+            var details = "Wingman" + ", " + data.player.match_stats.kills + "/" + data.player.match_stats.assists + "/" + data.player.match_stats.deaths    //fixed name of wingman
         } else {
             var details = data.map.mode[0].toUpperCase() + data.map.mode.slice(1) + ", " + data.player.match_stats.kills + "/" + data.player.match_stats.assists + "/" + data.player.match_stats.deaths
         }
@@ -119,7 +132,6 @@ function setRpcActivity(data) {         //Set Rp activity
             maptext = map
         }
 
-
         if (data)  //If data isnt null, set the missing fields for every gamemode (such as the map, the team, etc...)
             var activity = {
                 details: details,
@@ -132,10 +144,22 @@ function setRpcActivity(data) {         //Set Rp activity
 
             }
     }
-
-
     rpc.setActivity(activity) //set activity
-
-
 }
 rpc.login({ clientId: clientId })
+server.listen(port, host);
+console.log('Listening at http://' + host + ':' + port);
+
+const isRunning = (query, cb) => {
+    let platform = process.platform;
+    let cmd = '';
+    switch (platform) {
+        case 'win32': cmd = `tasklist`; break;
+        case 'darwin': cmd = `ps -ax | grep ${query}`; break;
+        case 'linux': cmd = `ps -A`; break;
+        default: break;
+    }
+    exec(cmd, (err, stdout, stderr) => {
+        cb(stdout.toLowerCase().indexOf(query.toLowerCase()) > -1);
+    });
+}
