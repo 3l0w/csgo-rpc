@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
   "author": "",
   "dependencies": {
@@ -16,5 +16,8 @@
     "promptly": "^3.0.3",
     "windows-drive-letters": "^3.1.0"
   },
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "nexe": "^2.0.0-rc.34"
+  }
 }
