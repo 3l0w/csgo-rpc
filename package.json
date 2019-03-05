@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "build":"node build.js"
+    "build": "node build.js"
   },
   "author": "",
   "dependencies": {
@@ -19,7 +19,6 @@
   },
   "license": "ISC",
   "devDependencies": {
-    "nexe": "^2.0.0-rc.34",
-    "typescript": "^3.3.3333"
+    "nexe": "^2.0.0-rc.34"
   }
 }

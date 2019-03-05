@@ -1,3 +1,5 @@
 node_modules/
 build
 getmap.js
+buildtools/ResourceHacker.ini
+tsconfig.json
