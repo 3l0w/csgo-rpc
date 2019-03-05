@@ -10,10 +10,15 @@ compile({ //build csgorpc_win.exe
     output: "./build/csbuild.exe",
     debugBundle: true
 }).then(() => {
-    exec("buildtools\\ResourceHacker.exe -open build\\csbuild.exe -save build\\csgorpc_win.exe -action addoverwrite -res img\\csgo_icon.ico -mask ICONGROUP,IDR_MAINFRAME", { windowsHide: true })
-    //set an icon for the exe
-    fs.unlinkSync("./build/csbuild.exe")
-
+    if (process.platform === "win32") {
+        exec("buildtools\\ResourceHacker.exe -open build\\csbuild.exe -save build\\csgorpc_win.exe -action addoverwrite -res img\\csgo_icon.ico -mask ICONGROUP,IDR_MAINFRAME", { windowsHide: true })
+        //set an icon for the exe
+        fs.unlinkSync("./build/csbuild.exe")
+    } else if (process.platform === "linux") {
+        exec("wine buildtools\\ResourceHacker.exe -open build\\csbuild.exe -save build\\csgorpc_win.exe -action addoverwrite -res img\\csgo_icon.ico -mask ICONGROUP,IDR_MAINFRAME", { windowsHide: true })
+        //set an icon for the exe
+        fs.unlinkSync("./build/csbuild.exe")
+    }
 })
 compile({ //build csgorpc_linux
     input: "./index.js",
@@ -31,7 +36,13 @@ compile({ //build install_windows.js
     output: "./build/installbuild.exe",
     verbose: true,
 }).then(() => {
-    exec("buildtools\\ResourceHacker.exe -open build\\installbuild.exe -save build\\install_win.exe -action addoverwrite -res img\\install.ico -mask ICONGROUP,IDR_MAINFRAME", { windowsHide: true })
-    //set an icon for the exe
-    fs.unlinkSync("./build/installbuild.exe")
+    if (process.platform === "win32") {
+        exec("buildtools\\ResourceHacker.exe -open build\\installbuild.exe -save build\\install_win.exe -action addoverwrite -res img\\install.ico -mask ICONGROUP,IDR_MAINFRAME", { windowsHide: true })
+        //set an icon for the exe
+        fs.unlinkSync("./build/installbuild.exe")
+    } else if (process.platform === "linux") {
+        exec("wine buildtools\\ResourceHacker.exe -open build\\installbuild.exe -save build\\install_win.exe -action addoverwrite -res img\\install.ico -mask ICONGROUP,IDR_MAINFRAME", { windowsHide: true })
+        //set an icon for the exe
+        fs.unlinkSync("./build/installbuild.exe")
+    }
 })
