@@ -11,7 +11,6 @@ function search(folder) {
             let stats = fs.statSync(folder + "/" + element)
             if (stats) {
                 if (stats.isDirectory()) { //check if this is a file or a folder
-                    console.log(folder)
                     if ((folder + "/" + element).includes("common/Counter-Strike Global Offensive/csgo/cfg")) { //check if the Path containt the csgo cfg folder 
                         let foldsplit = (folder + "/" + element).split("/")
                         if (foldsplit[foldsplit.length - 1] === "cfg") {

@@ -25,9 +25,9 @@ drives.usedLetters().then((letters) => { //get all conected disk
     length[1] = letters.length
     for (let i = 0; i < letters.length; i++) {
         const letter = letters[i];
-        console.log("Searching in "+ letter + ":")
+        console.log("Searching in " + letter + ":")
         length[0]++
-        if(letter+":" === __dirname.split("\\")[0]){search(letter + ':\\')} // fix the search on the disk where is the installer
+        if (letter + ":" === __dirname.split("\\")[0]) { search(letter + ':\\') } // fix the search on the disk where is the installer
         search(letter + ':') //start the search for one disk
     }
 
@@ -41,7 +41,7 @@ function search(folder) {
         const element = dir[i];
         if (bannedfolder.indexOf(folder + "\\" + element) === -1) { //check if the folder is banned
             pass = true
-            for (let i = 0; i < bannedname.length; i++) { 
+            for (let i = 0; i < bannedname.length; i++) {
                 const name = bannedname[i];
                 if ((folder + "\\" + element).includes(name)) {
                     var pass = false //check if the folder is banned
@@ -52,7 +52,6 @@ function search(folder) {
                     let stats = fs.statSync(folder + "\\" + element)
                     if (stats) {
                         if (stats.isDirectory()) { //check if this is a file or a folder
-                           console.log(folder)
                             if ((folder + "\\" + element).includes("common\\Counter-Strike Global Offensive\\csgo\\cfg")) { //check if the Path containt the csgo cfg folder 
                                 let foldsplit = (folder + "\\" + element).split("\\")
                                 if (foldsplit[foldsplit.length - 1] === "cfg") {
