@@ -15,8 +15,7 @@ Just run `csgorpc.`
 
 ## Building
 
-Clone the repository.
-Run : 
+Clone the repository, Run : 
 ```bash
 npm install
 npm run build
