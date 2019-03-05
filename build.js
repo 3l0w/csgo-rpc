@@ -1,35 +1,37 @@
 const compile = require("nexe").compile
 const fs = require("fs")
 const exec = require("child_process").execSync
-try {
+try { //if build dont exist create folder
     fs.mkdirSync("build")
 } catch (error) { }
-compile({
+compile({ //build csgorpc_win.exe
     input: "./index.js",
     targets: "win",
     output: "./build/csbuild.exe",
     debugBundle: true
 }).then(() => {
     exec("buildtools\\ResourceHacker.exe -open build\\csbuild.exe -save build\\csgorpc_win.exe -action addoverwrite -res img\\csgo_icon.ico -mask ICONGROUP,IDR_MAINFRAME", { windowsHide: true })
+    //set an icon for the exe
     fs.unlinkSync("./build/csbuild.exe")
 
 })
-compile({
+compile({ //build csgorpc_linux
     input: "./index.js",
     targets: "linux",
     output: "./build/csgorpc_linux"
 })
-compile({
+compile({ //build install_linux
     input: "./install_linux.js",
     targets: "linux",
     output: "./build/install_linux"
 })
-compile({
+compile({ //build install_windows.js
     input: "./install_windows.js",
     targets: "win",
     output: "./build/installbuild.exe",
     verbose: true,
 }).then(() => {
     exec("buildtools\\ResourceHacker.exe -open build\\installbuild.exe -save build\\install_win.exe -action addoverwrite -res img\\install.ico -mask ICONGROUP,IDR_MAINFRAME", { windowsHide: true })
+    //set an icon for the exe
     fs.unlinkSync("./build/installbuild.exe")
 })
