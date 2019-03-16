@@ -9,7 +9,7 @@ const exec = require('child_process').exec
 DiscordRPC.register(clientId);
 var rpc = new DiscordRPC.Client({ transport: 'ipc' });
 var time
-
+var ready
 
 rpc.on('ready', () => {         //When rp is connected, send the username in the console
     console.log('Authed for user', rpc.user.username);
@@ -20,6 +20,8 @@ rpc.on('ready', () => {         //When rp is connected, send the username in the
         instance: false,
         startTimestamp: new Date()
     })
+    ready = true
+
 });
 rpc.connect(clientId)           //Connect the rp with the application
 
@@ -32,14 +34,11 @@ server = http.createServer(function (req, res) {        //Create the server who 
                 try {
                     body = JSON.parse(data) //If data can be parsed the parse and store in body
                 } catch (error) {
-                    console.log(error)
                 }
 
             }
-
         });
         req.on('end', function () {
-            console.log(body);
             if (body) {                     //If body are not undefined then set the activity
                 setRpcActivity(body)
             }
@@ -55,11 +54,13 @@ server = http.createServer(function (req, res) {        //Create the server who 
 
 });
 setInterval(() => {
-    isRunning('csgo.exe', (status) => {
-        if (!status) {
-            rpc.clearActivity()
-        }
-    })
+    if (ready) {
+        isRunning('csgo.exe', (status) => {
+            if (!status) {
+                rpc.clearActivity()
+            }
+        })
+    }
 }, 1000);
 var menu = false;
 var menutime
@@ -146,10 +147,28 @@ function setRpcActivity(data) {         //Set Rp activity
     }
     rpc.setActivity(activity) //set activity
 }
-rpc.login({ clientId: clientId })
-server.listen(port, host);
-console.log('Listening at http://' + host + ':' + port);
+rpc.login({ clientId: clientId }).catch((error) => {
+    var interval = setInterval(() => {
+            rpc = new DiscordRPC.Client({ transport: 'ipc' });
+            rpc.on('ready', () => {         //When rp is connected, send the username in the console
+                console.log('Authed for user', rpc.user.username);
+                rpc.setActivity({
+                    details: "In menu",
+                    largeImageKey: "icon",
+                    largeImageText: "Counter-Strike Global Offensive",
+                    instance: false,
+                    startTimestamp: new Date()
+                })
+                ready = true
+                clearInterval(interval)
+            });
 
+            rpc.login({ clientId: clientId }).catch(() => { })
+            rpc.connect()
+    }, 3000)
+})
+server.listen(port, host);
+console.log("Trying to connect to discord .....")
 const isRunning = (query, cb) => {
     let platform = process.platform;
     let cmd = '';
