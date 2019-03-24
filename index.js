@@ -9,7 +9,6 @@ const exec = require('child_process').exec
 DiscordRPC.register(clientId);
 var rpc = new DiscordRPC.Client({ transport: 'ipc' });
 var time
-var ready
 
 rpc.on('ready', () => {         //When rp is connected, send the username in the console
     console.log('Authed for user', rpc.user.username);
@@ -20,8 +19,14 @@ rpc.on('ready', () => {         //When rp is connected, send the username in the
         instance: false,
         startTimestamp: new Date()
     })
-    ready = true
+    setInterval(() => {
+        isRunning('csgo.exe', (status) => {
+            if (!status) {
+                rpc.clearActivity()
+            }
+        })
 
+    }, 1000);
 });
 rpc.connect(clientId)           //Connect the rp with the application
 
@@ -53,15 +58,6 @@ server = http.createServer(function (req, res) {        //Create the server who 
     }
 
 });
-setInterval(() => {
-    if (ready) {
-        isRunning('csgo.exe', (status) => {
-            if (!status) {
-                rpc.clearActivity()
-            }
-        })
-    }
-}, 1000);
 var menu = false;
 var menutime
 function setRpcActivity(data) {         //Set Rp activity
@@ -128,12 +124,13 @@ function setRpcActivity(data) {         //Set Rp activity
             map = data.map.name
         }
         if (maplist.indexOf(map) === -1) {
-            map = "icon"                    //If the program don't know a map then set map icon as csgo icon
+            maptext = map
+            map = "icon"              //If the program don't know a map then set map icon as csgo icon
         } else {
             maptext = map
         }
 
-        if (data)  //If data isnt null, set the missing fields for every gamemode (such as the map, the team, etc...)
+        if (data) {  //If data isnt null, set the missing fields for every gamemode (such as the map, the team, etc...)
             var activity = {
                 details: details,
                 state: state,
@@ -144,27 +141,35 @@ function setRpcActivity(data) {         //Set Rp activity
                 startTimestamp: time
 
             }
+        }
     }
     rpc.setActivity(activity) //set activity
 }
 rpc.login({ clientId: clientId }).catch((error) => {
     var interval = setInterval(() => {
-            rpc = new DiscordRPC.Client({ transport: 'ipc' });
-            rpc.on('ready', () => {         //When rp is connected, send the username in the console
-                console.log('Authed for user', rpc.user.username);
-                rpc.setActivity({
-                    details: "In menu",
-                    largeImageKey: "icon",
-                    largeImageText: "Counter-Strike Global Offensive",
-                    instance: false,
-                    startTimestamp: new Date()
+        rpc = new DiscordRPC.Client({ transport: 'ipc' });
+        rpc.on('ready', () => {         //When rp is connected, send the username in the console
+            console.log('Authed for user', rpc.user.username);
+            rpc.setActivity({
+                details: "In menu",
+                largeImageKey: "icon",
+                largeImageText: "Counter-Strike Global Offensive",
+                instance: false,
+                startTimestamp: new Date()
+            })
+            setInterval(() => {
+                isRunning('csgo.exe', (status) => {
+                    if (!status) {
+                        rpc.clearActivity()
+                    }
                 })
-                ready = true
-                clearInterval(interval)
-            });
 
-            rpc.login({ clientId: clientId }).catch(() => { })
-            rpc.connect()
+            }, 1000);
+            clearInterval(interval)
+        });
+
+        rpc.login({ clientId: clientId }).catch(() => { })
+        rpc.connect()
     }, 3000)
 })
 server.listen(port, host);
