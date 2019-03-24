@@ -23,7 +23,7 @@ npm run build
 The program will be build and store in the `build` folder.
 
 ## Notes:
-This programe theoretically run on linux but i did not test.
++This program theoretically run on linux but i didn't test.
 If the program don't work open a issue and I will fix.
 
 ## Contributing
