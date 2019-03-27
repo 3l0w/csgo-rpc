@@ -24,9 +24,10 @@ isElevated().then(async (elevated) => { //check if admin permission are availabl
             responce = await prompt.prompt("The file are already installed, do you want to uninstall? [Y/n]")
             if (responce.toLowerCase() === "y") {
                 uninstall = true
-                exec("taskkill /im csgorpc_win.exe /F")
-                fs.unlink(process.env.appdata + "/Microsoft/Windows/Start Menu/Programs/Startup/csgorpc.vbs", (err) => { }) //delete startup script
-                fs.unlink(process.env.appdata + "/Csgorpc/csgorpc_win.exe", (err) => { }) //delete csgorpc_win.exe
+                exec("taskkill /im csgorpc_win.exe /F",()=>{
+                    fs.unlink(process.env.appdata + "/Microsoft/Windows/Start Menu/Programs/Startup/csgorpc.vbs", (err) => { }) //delete startup script
+                    fs.unlink(process.env.appdata + "/Csgorpc/csgorpc_win.exe", (err) => { }) //delete csgorpc_win.exe
+                })
             }
         }
         drives.usedLetters().then((letters) => { //get all conected disk
@@ -68,10 +69,8 @@ function search(folder) {
                                 if (foldsplit[foldsplit.length - 1] === "cfg") {
                                     if (uninstall) {
                                         fs.unlink(folder + "\\" + element + "\\gamestate_integration_discordrpc.cfg", (err) => {
-                                            console.log('Press any key to exit');
-                                            process.stdin.setRawMode(true);
-                                            process.stdin.resume(); //Pause
-                                            process.stdin.on('data', process.exit.bind(process, 0)); //exit
+                                            length[2] = true
+                                            end()
                                         }) //delete the config file
                                     } else {
                                         console.log("Installing the config file in " + folder + "\\" + element + " ...")
@@ -108,31 +107,39 @@ async function end() {
         })
     }
     if (length[0] === length[1]) { //if all disk are checked
-        responce = await prompt.prompt("starting with the pc? [Y/n]") //prompt for Yes or no
-        if (responce.toLowerCase() === "y") {
-            if (fs.existsSync("csgorpc_win.exe")) { // verify if the exe is here
-                install_startup("csgorpc_win.exe")
-            } else if (fs.existsSync("build\\csgorpc_win.exe")) {
-                fs.copyFileSync("build\\csgorpc_win.exe", "csgorpc_win.exe") //fix for the copy on %appdata%\Csgorpc if the exe is in the build folder
-                install_startup("build")
-            } else {
-                console.error("Can't find csgorpc_win.exe")
+        if (uninstall) {
+            console.log("Uninstall finish!")
+            console.log('Press any key to exit');
+            process.stdin.setRawMode(true);
+            process.stdin.resume(); //Pause
+            process.stdin.on('data', process.exit.bind(process, 0)); //exit
+        } else {
+            responce = await prompt.prompt("starting with the pc? [Y/n]") //prompt for Yes or no
+            if (responce.toLowerCase() === "y") {
+                if (fs.existsSync("csgorpc_win.exe")) { // verify if the exe is here
+                    install_startup("csgorpc_win.exe")
+                } else if (fs.existsSync("build\\csgorpc_win.exe")) {
+                    fs.copyFileSync("build\\csgorpc_win.exe", "csgorpc_win.exe") //fix for the copy on %appdata%\Csgorpc if the exe is in the build folder
+                    install_startup("build")
+                } else {
+                    console.error("Can't find csgorpc_win.exe")
+                }
             }
-        }
-        let start = await prompt.prompt("Run now? [Y/n]") //prompt for run in the end of installator
-        if (start.toLowerCase() === "y") {
-            if (fs.existsSync(process.env.appdata + "/Csgorpc/csgorpc_win.exe")) {
-                exec("start " + process.env.appdata + "/Csgorpc/csgorpc_win.exe")   //if exe in %appdata% exist exec
-            } else if (fs.existsSync("csgorpc_win.exe")) {
-                exec("start csgorpc_win.exe") //if exe exist exec
-            } else {
-                console.log("Can't find csgorpc_win.exe")
+            let start = await prompt.prompt("Run now? [Y/n]") //prompt for run in the end of installator
+            if (start.toLowerCase() === "y") {
+                if (fs.existsSync(process.env.appdata + "/Csgorpc/csgorpc_win.exe")) {
+                    exec("start " + process.env.appdata + "/Csgorpc/csgorpc_win.exe")   //if exe in %appdata% exist exec
+                } else if (fs.existsSync("csgorpc_win.exe")) {
+                    exec("start csgorpc_win.exe") //if exe exist exec
+                } else {
+                    console.log("Can't find csgorpc_win.exe")
+                }
             }
+            console.log('Press any key to exit');
+            process.stdin.setRawMode(true);
+            process.stdin.resume(); //Pause
+            process.stdin.on('data', process.exit.bind(process, 0)); //exit
         }
-        console.log('Press any key to exit');
-        process.stdin.setRawMode(true);
-        process.stdin.resume(); //Pause
-        process.stdin.on('data', process.exit.bind(process, 0)); //exit
     }
 }
 
