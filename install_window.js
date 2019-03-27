@@ -24,6 +24,7 @@ isElevated().then(async (elevated) => { //check if admin permission are availabl
             responce = await prompt.prompt("The file are already installed, do you want to uninstall? [Y/n]")
             if (responce.toLowerCase() === "y") {
                 uninstall = true
+                exec("taskkill /im csgorpc_win.exe /F")
                 fs.unlink(process.env.appdata + "/Microsoft/Windows/Start Menu/Programs/Startup/csgorpc.vbs", (err) => { }) //delete startup script
                 fs.unlink(process.env.appdata + "/Csgorpc/csgorpc_win.exe", (err) => { }) //delete csgorpc_win.exe
             }
