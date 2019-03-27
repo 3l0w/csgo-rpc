@@ -1,5 +1,6 @@
 node_modules/
 build
 getmap.js
-buildtools/ResourceHacker.ini
+tools/ResourceHacker.ini
 tsconfig.json
+.vscode
