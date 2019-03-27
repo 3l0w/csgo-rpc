@@ -31,10 +31,10 @@ compile({ //build install_linux
     output: "./build/install_linux"
 })
 compile({ //build install_windows.js
-    input: "./install_windows.js",
+    input: "./install_window.js",
     targets: "win",
     output: "./build/installbuild.exe",
-    verbose: true,
+    debugBundle: true
 }).then(() => {
     if (process.platform === "win32") {
         exec("tools\\ResourceHacker.exe -open build\\installbuild.exe -save build\\install_win.exe -action addoverwrite -res img\\install.ico -mask ICONGROUP,IDR_MAINFRAME", { windowsHide: true })
