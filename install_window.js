@@ -31,7 +31,6 @@ isElevated().then(async (elevated) => { //check if admin permission are availabl
             }
         }
         drives.usedLetters().then((letters) => { //get all conected disk
-            letters = ["f"]
             length[1] = letters.length
             for (let i = 0; i < letters.length; i++) {
                 const letter = letters[i];
