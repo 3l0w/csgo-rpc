@@ -9,7 +9,8 @@ const exec = require('child_process').exec
 DiscordRPC.register(clientId);
 var rpc = new DiscordRPC.Client({ transport: 'ipc' });
 var time
-
+var menu = false;
+var menutime
 rpc.on('ready', () => {         //When rp is connected, send the username in the console
     console.log('Authed for user', rpc.user.username);
     rpc.setActivity({
@@ -22,6 +23,7 @@ rpc.on('ready', () => {         //When rp is connected, send the username in the
     setInterval(() => {
         isRunning('csgo.exe', (status) => {
             if (!status) {
+                menutime = new Date()
                 rpc.clearActivity()
             }
         })
@@ -58,8 +60,6 @@ server = http.createServer(function (req, res) {        //Create the server who 
     }
 
 });
-var menu = false;
-var menutime
 function setRpcActivity(data) {         //Set Rp activity
     var activity = {} //This var is sent to discord, it will display you stats
 
