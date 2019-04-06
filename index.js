@@ -160,6 +160,7 @@ rpc.login({ clientId: clientId }).catch((error) => {
             setInterval(() => {
                 isRunning('csgo.exe', (status) => {
                     if (!status) {
+                        menutime = new Date()
                         rpc.clearActivity()
                     }
                 })
