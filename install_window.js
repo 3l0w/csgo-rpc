@@ -24,7 +24,7 @@ isElevated().then(async (elevated) => { //check if admin permission are availabl
             responce = await prompt.prompt("The file are already installed, do you want to uninstall? [Y/n]")
             if (responce.toLowerCase() === "y") {
                 uninstall = true
-                exec("taskkill /im csgorpc_win.exe /F",()=>{
+                exec("taskkill /im csgorpc_win.exe /F", () => {
                     fs.unlink(process.env.appdata + "/Microsoft/Windows/Start Menu/Programs/Startup/csgorpc.vbs", (err) => { }) //delete startup script
                     fs.unlink(process.env.appdata + "/Csgorpc/csgorpc_win.exe", (err) => { }) //delete csgorpc_win.exe
                 })
@@ -32,12 +32,16 @@ isElevated().then(async (elevated) => { //check if admin permission are availabl
         }
         drives.usedLetters().then((letters) => { //get all conected disk
             length[1] = letters.length
+            letters = ["h"]
             for (let i = 0; i < letters.length; i++) {
                 const letter = letters[i];
                 console.log("Searching in " + letter + ":")
                 length[0]++
-                if (letter + ":" === __dirname.split("\\")[0]) { search(letter + ':\\') } // fix the search on the disk where is the installer
-                search(letter + ':') //start the search for one disk
+                if (letter + ":" === __dirname.split("\\")[0].toLocaleLowerCase()) {
+                    search(letter + ':\\') // fix the search on the disk where is the installer
+                } else {
+                    search(letter + ':') //start the search for one disk
+                }
             }
 
         }).catch((err) => {
