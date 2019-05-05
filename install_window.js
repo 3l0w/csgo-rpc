@@ -32,7 +32,6 @@ isElevated().then(async (elevated) => { //check if admin permission are availabl
         }
         drives.usedLetters().then((letters) => { //get all conected disk
             length[1] = letters.length
-            letters = ["h"]
             for (let i = 0; i < letters.length; i++) {
                 const letter = letters[i];
                 console.log("Searching in " + letter + ":")
