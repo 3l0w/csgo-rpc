@@ -52,8 +52,8 @@ compile({ //build csgorpc_linux
         output: "./build/install_linux"
     }).then(() => {
         var zip = new AdmZip();
-        zip.addLocalFile("./build/csgorpc_win.exe")
-        zip.addLocalFile("./build/install_win.exe");
+        zip.addLocalFile("./build/csgorpc_linux")
+        zip.addLocalFile("./build/install_linux");
         zip.writeZip("./build/csgorpc_linux.zip");
     })
 })
